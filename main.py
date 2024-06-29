@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
-from tkinter import  *
+import raan_analysis_view_controller as rvc
 
-root = Tk()
-Label(root, text = "Hello world!").pack()
-root.mainloop()
-
-
+# Keeping out entry point as minimal as possible
+app = rvc.RaanAnalysisViewController()
+app.mainloop()
