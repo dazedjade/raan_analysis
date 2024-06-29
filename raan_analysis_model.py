@@ -6,7 +6,7 @@ class RaanModel:
     AGENCY_ID: Final[int] = 147 # ID of Rocket Lab extracted from /agencies endpoint
     _DB_NAME: Final[str] = "past_launches.sqlite3"
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._initialise_database()
 
     def __del__(self):
