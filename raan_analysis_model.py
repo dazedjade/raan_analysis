@@ -17,3 +17,16 @@ class RaanModel:
     def _initialise_database(self):
         self.db_connection = sqlite3.connect(self._DB_NAME)
         self.cursor = self.db_connection.cursor()
+        try:
+            self.cursor.execute(
+                """CREATE TABLE IF NOT EXISTS launch (
+                id TEXT PRIMARY KEY,
+                name TEXT,
+                latitude TEXT,
+                longitude TEXT,
+                net_precision INTEGER,
+                success INTEGER
+                )"""
+            )
+        except sqlite3.DatabaseError as error:
+            print("Error creating table:\n" + error)
