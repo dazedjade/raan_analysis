@@ -1,10 +1,10 @@
+import datetime
+import json
 import os
 import requests
 from typing import Final
-import raan_analysis_model as raan_model
-import datetime
+from raan_analysis_model import RaanModel
 from suntimes import SunTimes  
-import json
 
 import test_json
 
@@ -61,7 +61,7 @@ class LaunchDataFetchService:
         json_text = test_json.JSON_DATA
         self._populate_database(data=json_text, model=model)
 
-    def _populate_database(self, data, model):
+    def _populate_database(self, data, model: RaanModel):
         json_obj = json.JSONDecoder(strict=False).decode(data)
 
         # Using .get attempts to get the passed key (results) and returns
@@ -105,9 +105,17 @@ class LaunchDataFetchService:
             sunrise_time = sunlight_calculator.riseutc(launch_day).timestamp()
             sunset_time = sunlight_calculator.setutc(launch_day).timestamp()
 
-            total_sunlight = sunset_time - sunrise_time
+            total_sunlight_hours = (sunset_time - sunrise_time) / 3600
 
-            print(f"On {launch_datetime} the sunrise was {sunrise_time}, sunset was {sunset_time} and there was {total_sunlight} seconds of light.")
+            model.upsert_launch_record(\
+                launch_id=launch_id, \
+                name=launch_name, \
+                latitude=latitude, \
+                longitude=longitude, \
+                net=launch_datetime.timestamp(), \
+                sunrise_timestamp=sunrise_time, \
+                hours_or_sunlight=total_sunlight_hours)
+            
 
 
 
