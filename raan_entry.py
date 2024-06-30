@@ -21,8 +21,8 @@ class RaanEntry(Frame):
         confirm_button = Button(self, text=Strings.CONFIRM, command=self._confirm_raan_pressed)
 
         raan_value_label.grid(row=0, column=0, sticky="nsew")
-        raan_value_entry.grid(row=0, column=1, sticky="nsew")
-        confirm_button.grid(row=0, column=2, sticky="nsew")
+        raan_value_entry.grid(row=0, column=1, sticky="nsw")
+        confirm_button.grid(row=0, column=2, sticky="nsw")
 
         self.columnconfigure(0, weight=3)
         self.columnconfigure(1, weight=1)

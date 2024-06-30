@@ -26,6 +26,23 @@ class RecordBrowser(Frame):
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
         self.columnconfigure(2, weight=1)
+
+    def set_items(self, items: list):
+        """
+        Assign the items that we want to browse through
+
+        Args:
+        items: List of items to navigate through
+
+        Note:
+        When setting a new set of items, the index is reset to 0 and the
+        `_display_item_changed` event is invoked to keep the UI in sync.
+        """
+        self._items = items
+        self._current_index = 0
+        item_to_display = self._items[self._current_index]
+        self._display_item_changed(item_to_display)
+        self._update_navigation_text()
         
     def item_count(self) -> int:
         if self._items is None:
@@ -61,4 +78,6 @@ class RecordBrowser(Frame):
         self._update_navigation_text()
 
     def _update_navigation_text(self):
-        self._position_label.configure(text=f"{self._current_index + 1} of {self.item_count()}")
+        item_count = self.item_count()
+        selected_index =  self._current_index + 1 if item_count > 0 else 0
+        self._position_label.configure(text=f"{selected_index} of {item_count}")
