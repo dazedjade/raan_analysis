@@ -1,8 +1,8 @@
 import tkinter as tk
-from launch_record import LaunchRecord
+from launch_data_fetch_service import LaunchDataFetchService
 from raan_analysis_model import RaanModel
 from raan_analysis_view import RaanAnalysisView
-from launch_data_fetch_service import LaunchDataFetchService
+from tkinter import messagebox
 
 # By having our view controller extend Tkinter, we can encapsulate all
 # behaviour and make use of a Model View Controller pattern.
@@ -35,4 +35,6 @@ class RaanAnalysisViewController(tk.Tk):
       self._view.display_record(launch_record)
 
    def _raan_value_confirmed(self, record_id: str, raan_value: float):
-      self._model.upsert_raan_value(record_id, raan_value)
+      success = self._model.upsert_raan_value(record_id, raan_value)
+      if not success:
+         messagebox.showinfo(message="Unable to write RAAN value to database. Check log for more information.")

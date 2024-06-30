@@ -61,7 +61,7 @@ class RaanModel:
         except sqlite3.DatabaseError as error:
             print(f"Error inserting record {id}:\n{error}")
 
-    def upsert_raan_value(self, launch_id: str, raan_value: float):
+    def upsert_raan_value(self, launch_id: str, raan_value: float) -> bool:
         """
         Updates (or first write) RAAN value for the passed launch id.
 
@@ -74,6 +74,9 @@ class RaanModel:
             self._db_connection.commit()
         except sqlite3.DatabaseError as error:
             print(f"Error writing RAAN value to record {launch_id}:\n{error}")
+            return False
+        
+        return True
 
     def query_all_record_ids(self) -> list:
         """
