@@ -14,6 +14,7 @@ class RaanAnalysisViewController(tk.Tk):
       self.model = RaanModel()
       self.view = RaanAnalysisView(self)
       self.view.set_on_fetch_launches_callback(self.fetch_launch_data)
+      self.view.display_record(None)
 
    def fetch_launch_data(self, count):
       fetcher = LaunchDataFetchService(count)
