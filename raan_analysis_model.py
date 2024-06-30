@@ -39,7 +39,7 @@ class RaanModel:
             longitude: str, \
             net: int, \
             sunrise_timestamp: int, \
-            hours_or_sunlight: int):
+            hours_of_sunlight: int):
         
         try:
             # We set raan to null on creation, as user will enter via UI
@@ -51,7 +51,7 @@ class RaanModel:
                     "{longitude}",
                     {net},
                     {sunrise_timestamp},
-                    {hours_or_sunlight},
+                    {hours_of_sunlight},
                     :NULL
                 );
                 """, \

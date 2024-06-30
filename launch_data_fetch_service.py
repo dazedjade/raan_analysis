@@ -114,7 +114,7 @@ class LaunchDataFetchService:
                 longitude=longitude, \
                 net=launch_datetime.timestamp(), \
                 sunrise_timestamp=sunrise_time, \
-                hours_or_sunlight=total_sunlight_hours)
+                hours_of_sunlight=total_sunlight_hours)
             
 
 
