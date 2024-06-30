@@ -50,16 +50,18 @@ class LaunchDataFetchService:
         self._compiled_url = base_url + self._PREVIOUS_LAUNCHES_QUERY %(limit)
 
     def fetch(self, model):
-        # try:
-        #     results = requests.get(self._compiled_url)
-        # except Exception as error:
-        #     print(f"Lanuch data error: {error}")
-        # else:
-        #     status = results.status_code
-        #     if status == 200:
-        #         print(results.json())
-        json_text = test_json.JSON_DATA
-        self._populate_database(data=json_text, model=model)
+        try:
+            results = requests.get(self._compiled_url)
+        except Exception as error:
+            print(f"Lanuch data error: {error}")
+        else:
+            status = results.status_code
+            if status == 200:
+                self._populate_database(data=results.json(), model=model)
+
+        # To use test data without making API request, comment out the above and uncomment the below.
+        # json_text = test_json.JSON_DATA
+        # self._populate_database(data=json_text, model=model)
 
     def _populate_database(self, data, model: RaanModel):
         json_obj = json.JSONDecoder(strict=False).decode(data)
