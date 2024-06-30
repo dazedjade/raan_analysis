@@ -18,13 +18,23 @@ class RaanAnalysisView:
     _net_datetime: StringVar
     _sunrise_datetime: StringVar
     _sunlight_hours: StringVar
+    _csv_file_name: StringVar
+    _pdf_file_name: StringVar
 
     def __init__(self, parent) -> None:
-        self.style = ttk.Style()
-        self._content = ttk.Frame(parent)
-        self._content.pack()
-        self._content.pack_configure(fill="both", expand=True)
+        
+        self._initialise_string_vars()
+        self._make_root_content(parent)
+        self._make_tab_container(self._content)
+        self._make_data_entry_tab(self._data_entry_tab)
+        self._make_analysis_tab(self._data_analysis_tab)
+        
 
+    # View Construction
+    # Note: This would benefit from self contained components similar to RecordBrowser and RaanEntry
+    # However, because of time constraint, this view code will have to remain here. :()
+
+    def _initialise_string_vars(self):
         self._fetch_count = StringVar()
         self._launch_name = StringVar()
         self._launch_id = StringVar()
@@ -33,15 +43,25 @@ class RaanAnalysisView:
         self._net_datetime = StringVar()
         self._sunrise_datetime = StringVar()
         self._sunlight_hours = StringVar()
+        self._csv_file_name = StringVar()
+        self._pdf_file_name = StringVar()
 
-        self._tab_container = ttk.Notebook(self._content)
-        data_entry_tab = ttk.Frame(self._tab_container)
-        data_analysis_tab = ttk.Frame(self._tab_container)
-        self._tab_container.add(data_entry_tab, text=Strings.DATA_FETCH)
-        self._tab_container.add(data_analysis_tab, text=Strings.ANALYSIS)
+    def _make_root_content(self, parent):
+        self.style = ttk.Style()
+        self._content = ttk.Frame(parent)
+        self._content.pack()
+        self._content.pack_configure(fill="both", expand=True)
+
+    def _make_tab_container(self, parent):
+        self._tab_container = ttk.Notebook(parent)
+        self._data_entry_tab = ttk.Frame(self._tab_container)
+        self._data_analysis_tab = ttk.Frame(self._tab_container)
+        self._tab_container.add(self._data_entry_tab, text=Strings.DATA_FETCH)
+        self._tab_container.add(self._data_analysis_tab, text=Strings.ANALYSIS)
         self._tab_container.pack(expand=True, fill="both")
 
-        fetch_frame = LabelFrame(data_entry_tab, text=Strings.LAUNCH_DATA_FETCHING)
+    def _make_data_entry_tab(self, parent):
+        fetch_frame = LabelFrame(parent, text=Strings.LAUNCH_DATA_FETCHING)
         fetch_frame.grid(row=0, column=0, padx=5, pady=5, sticky="new")
 
         fetch_launches_label = Label(fetch_frame, text=Strings.FETCH_COUNT)
@@ -50,15 +70,10 @@ class RaanAnalysisView:
         fetch_count_entry = Entry(fetch_frame, textvariable=self._fetch_count)
         fetch_count_entry.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
 
-        self._fetch_button = Button(fetch_frame, text=Strings.FETCH, command=self._fetch_launches_pressed)
-        self._fetch_button.grid(row=0, column=2, sticky="nsew", padx=20, pady=20)
-        
-        fetch_frame.rowconfigure(0, weight=1)
-        fetch_frame.columnconfigure(0, weight=3)
-        fetch_frame.columnconfigure(1, weight=1)
-        fetch_frame.columnconfigure(2, weight=1)
+        fetch_button = Button(fetch_frame, text=Strings.FETCH, command=self._fetch_launches_pressed)
+        fetch_button.grid(row=0, column=2, sticky="nsew", padx=20, pady=20)
 
-        entry_frame = LabelFrame(data_entry_tab, text=Strings.DATA_ENTRY)
+        entry_frame = LabelFrame(parent, text=Strings.DATA_ENTRY)
         entry_frame.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
 
         launch_name_label = Label(entry_frame, textvariable=self._launch_name)
@@ -83,12 +98,34 @@ class RaanAnalysisView:
         self._record_browser = RecordBrowser(entry_frame, [], self._selected_item_changed)
         self._record_browser.grid(row=4, column=1)
 
+        fetch_frame.rowconfigure(0, weight=1)
+        fetch_frame.columnconfigure(0, weight=3)
+        fetch_frame.columnconfigure(1, weight=1)
+        fetch_frame.columnconfigure(2, weight=1)
+
         entry_frame.rowconfigure(0, weight=1)
         entry_frame.rowconfigure(4, weight=1)
         entry_frame.columnconfigure(0, weight=1)
 
-        data_entry_tab.rowconfigure(1, weight=1)
-        data_entry_tab.columnconfigure(0, weight=1)
+        parent.rowconfigure(1, weight=1)
+        parent.columnconfigure(0, weight=1)
+
+    def _make_analysis_tab(self, parent):
+        show_graph_button = Button(parent, text="Show RAAN/Daylight Graph")
+        csv_file_name_label = Label(parent, text="CSV export file name")
+        csv_file_name_entry = Entry(parent, textvariable=self._csv_file_name)
+        export_csv_button = Button(parent, text="Export CSV")
+        pdf_file_name_label = Label(parent, text="PDF export file name")
+        pdf_file_name_entry = Entry(parent, textvariable=self._pdf_file_name)
+        export_pdf_button = Button(parent, text="Export PDF")
+
+        show_graph_button.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+        csv_file_name_label.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
+        csv_file_name_entry.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
+        export_csv_button.grid(row=0, column=3, padx=5, pady=5, sticky="nsew")
+        pdf_file_name_label.grid(row=0, column=4, padx=5, pady=5, sticky="nsew")
+        pdf_file_name_entry.grid(row=0, column=5, padx=5, pady=5, sticky="nsew")
+        export_pdf_button.grid(row=0, column=6, padx=5, pady=5, sticky="nsew")
 
 
     # Public methods to update view state
