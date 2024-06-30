@@ -1,6 +1,7 @@
 import datetime
 from tkinter import  *
 from tkinter import ttk
+from tkinter import messagebox
 from typing import Callable
 from gui_strings import Strings
 from launch_record import LaunchRecord
@@ -32,7 +33,7 @@ class RaanAnalysisView:
 
     # View Construction
     # Note: This would benefit from self contained components similar to RecordBrowser and RaanEntry
-    # However, because of time constraint, this view code will have to remain here. :()
+    # However, because of time constraint, this view code will have to remain here. :(
 
     def _initialise_string_vars(self):
         self._fetch_count = StringVar()
@@ -46,13 +47,13 @@ class RaanAnalysisView:
         self._csv_file_name = StringVar()
         self._pdf_file_name = StringVar()
 
-    def _make_root_content(self, parent):
+    def _make_root_content(self, parent: Tk):
         self.style = ttk.Style()
         self._content = ttk.Frame(parent)
         self._content.pack()
         self._content.pack_configure(fill="both", expand=True)
 
-    def _make_tab_container(self, parent):
+    def _make_tab_container(self, parent: Tk):
         self._tab_container = ttk.Notebook(parent)
         self._data_entry_tab = ttk.Frame(self._tab_container)
         self._data_analysis_tab = ttk.Frame(self._tab_container)
@@ -60,7 +61,7 @@ class RaanAnalysisView:
         self._tab_container.add(self._data_analysis_tab, text=Strings.ANALYSIS)
         self._tab_container.pack(expand=True, fill="both")
 
-    def _make_data_entry_tab(self, parent):
+    def _make_data_entry_tab(self, parent: Tk):
         fetch_frame = LabelFrame(parent, text=Strings.LAUNCH_DATA_FETCHING)
         fetch_frame.grid(row=0, column=0, padx=5, pady=5, sticky="new")
 
@@ -110,22 +111,32 @@ class RaanAnalysisView:
         parent.rowconfigure(1, weight=1)
         parent.columnconfigure(0, weight=1)
 
-    def _make_analysis_tab(self, parent):
-        show_graph_button = Button(parent, text="Show RAAN/Daylight Graph")
-        csv_file_name_label = Label(parent, text="CSV export file name")
+    def _make_analysis_tab(self, parent: Tk):
+        show_graph_button = Button(parent, text=Strings.SHOW_GRAPH, command=self._show_raan_sunlight_graph)
+        csv_file_name_label = Label(parent, text=Strings.CSV_EXPORT_FILE_NAME)
         csv_file_name_entry = Entry(parent, textvariable=self._csv_file_name)
-        export_csv_button = Button(parent, text="Export CSV")
-        pdf_file_name_label = Label(parent, text="PDF export file name")
+        export_csv_button = Button(parent, text=Strings.EXPORT_CSV, command=self._export_csv)
+        pdf_file_name_label = Label(parent, text=Strings.PDF_EXPORT_FILE_NAME)
         pdf_file_name_entry = Entry(parent, textvariable=self._pdf_file_name)
-        export_pdf_button = Button(parent, text="Export PDF")
+        export_pdf_button = Button(parent, text=Strings.EXPORT_PDF, command=self._export_pdf)
 
         show_graph_button.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
-        csv_file_name_label.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
+        csv_file_name_label.grid(row=0, column=1, padx=5, pady=5, sticky="nse")
         csv_file_name_entry.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
         export_csv_button.grid(row=0, column=3, padx=5, pady=5, sticky="nsew")
-        pdf_file_name_label.grid(row=0, column=4, padx=5, pady=5, sticky="nsew")
+        pdf_file_name_label.grid(row=0, column=4, padx=5, pady=5, sticky="nse")
         pdf_file_name_entry.grid(row=0, column=5, padx=5, pady=5, sticky="nsew")
         export_pdf_button.grid(row=0, column=6, padx=5, pady=5, sticky="nsew")
+
+        self._graph_canvas = Canvas(parent)
+        self._graph_canvas.grid(row=1, column=0, columnspan=7, padx=5, pady=5, sticky="nsew")
+
+        parent.columnconfigure(0, weight=1)
+        parent.columnconfigure(1, weight=1)
+        parent.columnconfigure(3, weight=1)
+        parent.columnconfigure(4, weight=1)
+        parent.columnconfigure(6, weight=1)
+        parent.rowconfigure(1, weight=1)
 
 
     # Public methods to update view state
@@ -166,7 +177,16 @@ class RaanAnalysisView:
     def set_confirm_raan_entry_callback(self, callback: Callable | None):
         self._confirm_raan_entry_callback = callback
 
+    def set_show_graph_callback(self, callback: Callable | None):
+        self._show_graph_callback = callback
 
+    def set_export_to_csv_callback(self, callback: Callable | None):
+        self._export_csv_callback = callback
+
+    def set_export_to_pdf_callback(self, callback: Callable | None):
+        self._export_pdf_callback = callback
+
+    
     # Callbacks for UI events that we're going to bounce up to the view controller
 
     def _fetch_launches_pressed(self):
@@ -181,3 +201,32 @@ class RaanAnalysisView:
         if self._confirm_raan_entry_callback is not None:
             record_id = self._record_browser.selected_item()
             self._confirm_raan_entry_callback(record_id, raan_value)
+
+    def _show_raan_sunlight_graph(self):
+        if self._show_graph_callback is not None:
+            self._show_graph_callback()
+
+    def _export_csv(self):
+        # Using basic checks for file name extension due to time constraints.
+        file_name = self._csv_file_name.get()
+        if file_name is None or file_name == "":
+            messagebox.showinfo(message="Please enter a name for the csv file")
+            return
+        
+        if file_name.find(".csv") == -1:
+            file_name += ".csv"
+        
+        if self._export_csv_callback is not None:
+            self._export_csv_callback(file_name)
+
+    def _export_pdf(self):
+        file_name = self._pdf_file_name.get()
+        if file_name is None or file_name == "":
+            messagebox.showinfo(message="Please enter a name for the csv file")
+            return
+        
+        if file_name.find(".pdf") == -1:
+            file_name += ".pdf"
+
+        if self._export_pdf_callback is not None:
+            self.export_pdf_callback()

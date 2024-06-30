@@ -17,3 +17,9 @@ class Strings:
     SUNLIGHT_HOURS: Final[str] = "Sunlight Hours"
     RAAN_VALUE: Final[str] = "RAAN Value:"
     CONFIRM: Final[str] = "Confirm"
+    SHOW_GRAPH: Final[str] = "Show RAAN/Daylight Graph"
+    CSV_EXPORT_FILE_NAME: Final[str] = "CSV export file name:"
+    EXPORT_CSV: Final[str] = "Export CSV"
+    PDF_EXPORT_FILE_NAME: Final[str] = "PDF export file name:"
+    EXPORT_PDF: Final[str] = "Export PDF"
+    
