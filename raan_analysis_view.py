@@ -11,7 +11,7 @@ class RaanAnalysisView:
     _fetch_count: StringVar
     _launch_name: StringVar
     _launch_id: StringVar
-    _lattitude: StringVar
+    _latitude: StringVar
     _longitude: StringVar
     _net_datetime: StringVar
     _sunrise_datetime: StringVar
@@ -26,7 +26,7 @@ class RaanAnalysisView:
         self._fetch_count = StringVar()
         self._launch_name = StringVar()
         self._launch_id = StringVar()
-        self._lattitude = StringVar()
+        self._latitude = StringVar()
         self._longitude = StringVar()
         self._net_datetime = StringVar()
         self._sunrise_datetime = StringVar()
@@ -61,7 +61,7 @@ class RaanAnalysisView:
 
         launch_name_label = Label(entry_frame, textvariable=self._launch_name)
         launch_id_label = Label(entry_frame, textvariable=self._launch_id)
-        latitude_label = Label(entry_frame, textvariable=self._lattitude)
+        latitude_label = Label(entry_frame, textvariable=self._latitude)
         longitude_label = Label(entry_frame, textvariable=self._longitude)
         net_label = Label(entry_frame, textvariable=self._net_datetime)
         sunrise_label = Label(entry_frame, textvariable=self._sunrise_datetime)
@@ -101,7 +101,7 @@ class RaanAnalysisView:
 
         self._launch_name.set(f"{Strings.LAUNCH_NAME}: ")
         self._launch_id.set(f"{Strings.LAUNCH_ID}: ")
-        self._lattitude.set(f"{Strings.LATITUDE}: ")
+        self._latitude.set(f"{Strings.LATITUDE}: ")
         self._longitude.set(f"{Strings.LONGITUDE}: ")
         self._net_datetime.set(f"{Strings.NET}: ")
         self._sunrise_datetime.set(f"{Strings.SUNRISE}: ")
@@ -120,7 +120,6 @@ class RaanAnalysisView:
         print(f"Confirm RAAN value: {raan_value}")
 
 
-    # Move the labels to use StringVar and then no need to have them as vars
     # Need to bounce item display to controller, controller then pass record obj into the view to display by updating stringvars
     # On save button, we can bounce the new RAAN value to controller to push into the database
     # also call refresh on completion of loading launch data
