@@ -70,7 +70,7 @@ class RaanModel:
         raan_value: Value of RAAN to add to record.
         """
         try:
-            self._cursor.execute(f"UPDATE launch SET raan={raan_value} WHERE id='{launch_id}'")
+            self._cursor.execute(f"UPDATE launch SET raan={raan_value} WHERE id='{launch_id}'",  { 'NULL': None })
             self._db_connection.commit()
         except sqlite3.DatabaseError as error:
             print(f"Error writing RAAN value to record {launch_id}:\n{error}")

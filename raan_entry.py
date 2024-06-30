@@ -35,4 +35,15 @@ class RaanEntry(Frame):
             self._raan_value.set(raan_value)
 
     def _confirm_raan_pressed(self):
-        self._raan_confirm_callback(self._raan_value.get())
+        entered_raan_value = self._raan_value.get()
+        set_to_value = ":NULL"
+        try:
+            raan_float = float(entered_raan_value)
+            if raan_float >= 0 and raan_float <= 360:
+                set_to_value = raan_float
+            else:
+                print("RAAN value not in bounds of 0 to 360, so setting to null.")
+        except ValueError:
+            print("Unable to parse enterd RAAN value, setting to null.")
+
+        self._raan_confirm_callback(set_to_value)
