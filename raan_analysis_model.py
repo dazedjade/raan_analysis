@@ -3,7 +3,7 @@ from typing import Final
 
 class RaanModel:
 
-    _DB_NAME: Final[str] = "past_launches.sqlite3"
+    _DB_NAME: Final[str] = "past_launches.db"
 
     def __init__(self) -> None:
         self._initialise_database()
@@ -21,10 +21,12 @@ class RaanModel:
                 """CREATE TABLE IF NOT EXISTS launch (
                 id TEXT PRIMARY KEY,
                 name TEXT,
-                latitude TEXT,
-                longitude TEXT,
-                net_precision INTEGER,
-                success INTEGER
+                latitude TEXT NOT NULL,
+                longitude TEXT NOT NULL,
+                net INTEGER,
+                hours_of_sunlight INTEGER NOT NULL,
+                sunrise INTEGER NOT NULL,
+                raan REAL
                 )"""
             )
         except sqlite3.DatabaseError as error:

@@ -17,4 +17,4 @@ class RaanAnalysisViewController(tk.Tk):
 
    def fetch_launch_data(self, count):
       fetcher = launch_fetcher.LaunchDataFetchService(count)
-      fetcher.fetch()
+      fetcher.fetch(None)
