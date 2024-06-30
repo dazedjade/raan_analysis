@@ -6,8 +6,6 @@ from typing import Final
 from raan_analysis_model import RaanModel
 from suntimes import SunTimes  
 
-import test_json
-
 # Handles the fetch and parsing of data from API endpoint.
 #
 # Note: While we use the limit field in the launches/previous endpoint
@@ -60,6 +58,7 @@ class LaunchDataFetchService:
                 self._populate_database(data=results.json(), model=model)
 
         # To use test data without making API request, comment out the above and uncomment the below.
+        # You will also need to add "import test_json" to access the test data.
         # json_text = test_json.JSON_DATA
         # self._populate_database(data=json_text, model=model)
 
