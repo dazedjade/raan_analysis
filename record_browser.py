@@ -50,6 +50,16 @@ class RecordBrowser(Frame):
         
         return len(self._items)
     
+    def selected_item(self) -> str | None:
+
+        # Safety check for items existing and array bounds
+        if self._items is None or \
+            self._current_index >= self.item_count() or \
+            self._current_index < 0:
+            return None
+        
+        return self._items[self._current_index]
+    
     def _previous_record(self):
         """
         Invoke navigation to previous record if not already at 0th entry

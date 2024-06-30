@@ -12,23 +12,27 @@ class RaanAnalysisViewController(tk.Tk):
       super().__init__()
 
       self.title("RAAN Daylight Analysis Tool")
-      self.model = RaanModel()
-      self.view = RaanAnalysisView(self)
-      self.view.set_on_fetch_launches_callback(self.fetch_launch_data)
-      self.view.display_record(None)
+      self._model = RaanModel()
+
+      self._view = RaanAnalysisView(self)
+      self._view.set_on_fetch_launches_callback(self._fetch_launch_data)
+      self._view.set_selected_record_changed_callback(self._selected_record_changed)
+      self._view.set_confirm_raan_entry_callback(self._raan_value_confirmed)
+      self._view.display_record(None)
+      self._view.display_items_list(self._model.query_all_record_ids())
 
 
    # Callbacks for our UI events
 
-   def fetch_launch_data(self, count):
+   def _fetch_launch_data(self, count):
       fetcher = LaunchDataFetchService(count)
       fetcher.fetch(self.model)
 
-   def selected_record_changed(self, record_id: str):
+   def _selected_record_changed(self, record_id: str):
       # Fetch record from model
       # Inject the LaunchRecord object into UI to update itself
-      pass
+      launch_record = self._model.query_launch_record(record_id)
+      self._view.display_record(launch_record)
 
-   def raan_value_confirmed(self, record_id: str, raan_value: float):
-      # Set raan value for the specified record
-      pass
+   def _raan_value_confirmed(self, record_id: str, raan_value: float):
+      self._model.upsert_raan_value(record_id, raan_value)

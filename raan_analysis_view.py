@@ -77,8 +77,8 @@ class RaanAnalysisView:
         sunrise_label.grid(row=2, column=1, sticky="nsw")
         sunlight_hours_label.grid(row=3, column=1, sticky="nsw")
 
-        raan_entry = RaanEntry(entry_frame, self._confirm_raan_entry)
-        raan_entry.grid(row=4, column=0)
+        self._raan_entry = RaanEntry(entry_frame, self._confirm_raan_entry)
+        self._raan_entry.grid(row=4, column=0)
 
         self._record_browser = RecordBrowser(entry_frame, [], self._selected_item_changed)
         self._record_browser.grid(row=4, column=1)
@@ -104,14 +104,15 @@ class RaanAnalysisView:
             # When a null record is passed, use a default display
             launch_record = LaunchRecord.empty_record()
 
-        self._launch_name.set(f"{Strings.LAUNCH_NAME}: {launch_record.launch_id}")
-        self._launch_id.set(f"{Strings.LAUNCH_ID}: {launch_record.name}")
+        self._launch_name.set(f"{Strings.LAUNCH_NAME}: {launch_record.name}")
+        self._launch_id.set(f"{Strings.LAUNCH_ID}: {launch_record.launch_id}")
         self._latitude.set(f"{Strings.LATITUDE}: {launch_record.latitude}")
         self._longitude.set(f"{Strings.LONGITUDE}: {launch_record.longitude}")
         self._net_datetime.set(f"{Strings.NET}: {datetime.datetime.fromtimestamp(launch_record.net)}")
         self._sunrise_datetime.set(\
             f"{Strings.SUNRISE}: {datetime.datetime.fromtimestamp(launch_record.sunrise_timestamp)}")
         self._sunlight_hours.set(f"{Strings.SUNLIGHT_HOURS}: {launch_record.hours_of_sunlight:.{3}}")
+        self._raan_entry.display_existing_raan_value(launch_record.raan)
 
     def display_items_list(self, items: list):
         self._record_browser.set_items(items)
@@ -135,10 +136,11 @@ class RaanAnalysisView:
         if self._fetch_launches_callback is not None:
             self._fetch_launches_callback(self._fetch_count.get())
 
-    def _selected_item_changed(self, item_to_display):
+    def _selected_item_changed(self, item_to_display: str):
         if self._selected_record_changed_callback is not None:
             self._selected_record_changed_callback(item_to_display)
 
-    def _confirm_raan_entry(self, raan_value):
+    def _confirm_raan_entry(self, raan_value: float):
         if self._confirm_raan_entry_callback is not None:
-            self._confirm_raan_entry_callback(raan_value)
+            record_id = self._record_browser.selected_item()
+            self._confirm_raan_entry_callback(record_id, raan_value)

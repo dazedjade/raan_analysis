@@ -1,5 +1,6 @@
 import sqlite3
 from typing import Final
+from launch_record import LaunchRecord
 
 class RaanModel:
 
@@ -9,15 +10,15 @@ class RaanModel:
         self._initialise_database()
 
     def __del__(self):
-        self.cursor.close()
-        self.db_connection.close()
+        self._cursor.close()
+        self._db_connection.close()
 
     # We're using SQLite, so fetch the database or create if it doesn't exist
     def _initialise_database(self):
-        self.db_connection = sqlite3.connect(self._DB_NAME)
-        self.cursor = self.db_connection.cursor()
+        self._db_connection = sqlite3.connect(self._DB_NAME)
+        self._cursor = self._db_connection.cursor()
         try:
-            self.cursor.execute(
+            self._cursor.execute(
                 """CREATE TABLE IF NOT EXISTS launch (
                     id TEXT PRIMARY KEY,
                     name TEXT,
@@ -43,7 +44,7 @@ class RaanModel:
         
         try:
             # We set raan to null on creation, as user will enter via UI
-            self.cursor.execute(f"""
+            self._cursor.execute(f"""
                 INSERT or REPLACE INTO launch VALUES (
                     "{launch_id}",
                     "{name}",
@@ -56,7 +57,69 @@ class RaanModel:
                 );
                 """, \
                 { 'NULL': None })
-            self.db_connection.commit()
+            self._db_connection.commit()
         except sqlite3.DatabaseError as error:
-            print(f"Error iinserting record {id}:\n{error}")
+            print(f"Error inserting record {id}:\n{error}")
 
+    def upsert_raan_value(self, launch_id: str, raan_value: float):
+        """
+        Updates (or first write) RAAN value for the passed launch id.
+
+        Args:
+        launch_id: ID of the launch to set the RAAN for.
+        raan_value: Value of RAAN to add to record.
+        """
+        try:
+            self._cursor.execute(f"UPDATE launch SET raan={raan_value} WHERE id='{launch_id}'")
+            self._db_connection.commit()
+        except sqlite3.DatabaseError as error:
+            print(f"Error writing RAAN value to record {launch_id}:\n{error}")
+
+    def query_all_record_ids(self) -> list:
+        """
+        Returns a list of all contained launch record ids
+        """
+        try:
+            self._cursor.execute(f"SELECT id FROM launch")
+            results = self._cursor.fetchall()
+
+            def extract_id(element):
+                return element[0]
+
+            # Result is contained in a tuple, so extract to a simple list of ids.
+            launch_ids = list(map(extract_id, results))
+
+            return launch_ids
+        except sqlite3.DatabaseError as error:
+            print(f"Error fetching record ids {error}")
+            return []
+
+    def query_launch_record(self, launch_id) -> LaunchRecord:
+        """
+        Get LaunchRecord instance for record with specified launch id
+
+        Args:
+        launch_id: String containg the id of the launch to fetch data for.
+
+        Returns:
+        LaunchRecord instance containing the launche's data or empty record if not found.
+        """
+
+        self._cursor.execute(f"SELECT * FROM launch WHERE id='{launch_id}'")
+        record = self._cursor.fetchone()
+        
+        if record is None:
+            print("Launch record not found, using default data")
+            return LaunchRecord.empty_record()
+        
+        # Using named args here as record[n] isn't very clear
+        return LaunchRecord(\
+            launch_id=record[0], \
+            name=record[1], \
+            latitude=record[2], \
+            longitude=record[3], \
+            net=record[4], \
+            sunrise_timestamp=record[5], \
+            hours_of_sunlight=record[6], \
+            raan=record[7])      
+        

@@ -28,6 +28,11 @@ class RaanEntry(Frame):
         self.columnconfigure(1, weight=1)
         self.columnconfigure(0, weight=2)
 
+    def display_existing_raan_value(self, raan_value: float | None):
+        if raan_value is None:
+            self._raan_value.set("")
+        else:
+            self._raan_value.set(raan_value)
 
     def _confirm_raan_pressed(self):
         self._raan_confirm_callback(self._raan_value.get())
