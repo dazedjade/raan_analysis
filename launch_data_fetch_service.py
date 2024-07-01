@@ -29,11 +29,14 @@ class LaunchDataFetchService:
         "PROD": "https://ll.thespacedevs.com/"
     }
 
-    # Construction of this object includes preparing the fetch query URL
-    # Param:
-    #   launches_count - the number of launches to fetch. If a negative or non-integer
-    # is passed, this defaults to 0, and the endpoint will return a page of 10 results.
     def __init__(self, launches_count) -> None:
+        """
+        Construction of this object includes preparing the fetch query URL
+
+        Args:
+        launches_count - the number of launches to fetch. If a negative or non-integer is passed, 
+        this defaults to 0, and the endpoint will return a page of 10 results.
+        """
 
         # Default to PROD for cases where API_ENV isn't specified in os.environ
         base_url = self._BASE_URL_ENVS[self._ENV_PROD]
@@ -47,29 +50,30 @@ class LaunchDataFetchService:
         # Using string interpolation, we're able to build our fetch query URL
         self._compiled_url = base_url + self._PREVIOUS_LAUNCHES_QUERY %(limit)
 
-    def fetch(self, model):
+    def fetch(self, model) -> bool:
         try:
             results = requests.get(self._compiled_url)
         except Exception as error:
             print(f"Lanuch data error: {error}")
+            return False
         else:
             status = results.status_code
             if status == 200:
-                self._populate_database(data=results.json(), model=model)
+                success = self._populate_database(json_data=results.json(), model=model)
+                return success
 
         # To use test data without making API request, comment out the above and uncomment the below.
         # You will also need to add "import test_json" to access the test data.
         # json_text = test_json.JSON_DATA
         # self._populate_database(data=json_text, model=model)
 
-    def _populate_database(self, data, model: RaanModel):
-        json_obj = json.JSONDecoder(strict=False).decode(data)
-
+    def _populate_database(self, json_data, model: RaanModel) -> bool:
+        
         # Using .get attempts to get the passed key (results) and returns
         # None if the specified key is not found within the object.
-        launch_records = json_obj.get("results")
+        launch_records = json_data.get("results")
         if launch_records is None:
-            return  # No records
+            return False # No records
         
         for record in launch_records:
             # Before parse/calculating other data, first attempt to fetch the data
@@ -116,4 +120,7 @@ class LaunchDataFetchService:
                 net=launch_datetime.timestamp(), \
                 sunrise_timestamp=sunrise_time, \
                 hours_of_sunlight=total_sunlight_hours)
+        
+        return True
+
             

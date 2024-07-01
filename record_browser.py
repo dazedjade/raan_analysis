@@ -39,6 +39,10 @@ class RecordBrowser(Frame):
         `_display_item_changed` event is invoked to keep the UI in sync.
         """
         self._items = items
+        if self._items is None or len(self._items) == 0:
+            # Nothing to show
+            return
+        
         self._current_index = 0
         item_to_display = self._items[self._current_index]
         self._display_item_changed(item_to_display)

@@ -30,7 +30,12 @@ class RaanAnalysisViewController(tk.Tk):
 
    def _fetch_launch_data(self, count):
       fetcher = LaunchDataFetchService(count)
-      fetcher.fetch(self.model)
+      success = fetcher.fetch(self._model)
+      if success:
+         self._view.display_items_list(self._model.query_all_record_ids())
+         messagebox.showinfo(message="Successfully fetched records")
+      else:
+         messagebox.showinfo(message="Fetch operation did not complete successfully. Check logs for more information.")
 
    def _selected_record_changed(self, record_id: str):
       # Fetch record from model
