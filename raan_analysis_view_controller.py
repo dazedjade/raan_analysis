@@ -21,11 +21,11 @@ class RaanAnalysisViewController(tk.Tk):
       self._view.set_on_fetch_launches_callback(self._fetch_launch_data)
       self._view.set_selected_record_changed_callback(self._selected_record_changed)
       self._view.set_confirm_raan_entry_callback(self._raan_value_confirmed)
-      self._view.display_record(None)
-      self._view.display_items_list(self._model.query_all_record_ids())
       self._view.set_show_graph_callback(self._show_raan_sunlight_graph)
       self._view.set_export_data_to_csv_callback(self._export_data_to_csv)
       self._view.set_export_graph_to_pdf_callback(self._export_graph_to_pdf)
+      self._view.display_record(None)
+      self._view.display_items_list(self._model.query_all_record_ids())
 
 
    # Callbacks for our UI events
