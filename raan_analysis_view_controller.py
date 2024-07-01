@@ -1,3 +1,5 @@
+import pandas as pd
+import matplotlib.pyplot as plt
 import tkinter as tk
 from launch_data_fetch_service import LaunchDataFetchService
 from raan_analysis_model import RaanModel
@@ -43,10 +45,34 @@ class RaanAnalysisViewController(tk.Tk):
          messagebox.showinfo(message="Unable to write RAAN value to database. Check log for more information.")
 
    def _show_raan_sunlight_graph(self):
-      pass
+      df = self._model.as_pandas_frame()
+      df.plot(\
+         title="Scatter graph showing correlation between RAAN and hours of sunligh.", \
+         kind="scatter", \
+         grid=True, \
+         x="raan", \
+         xlabel="RAAN", \
+         xlim=(0, 360), \
+         y="hours_of_sunlight", \
+         ylabel="Hours of Sunlight")
+      plt.show()
+
 
    def _export_data_to_csv(self, file_name: str):
-      pass
+      df = self._model.as_pandas_frame()
+      df.to_csv(file_name)
+      messagebox.showinfo(message=f"Exported data to {file_name}")
 
    def _export_graph_to_pdf(self, file_name: str):
-      pass
+      df = self._model.as_pandas_frame()
+      df.plot(\
+         title="Scatter graph showing correlation between RAAN and hours of sunlight.", \
+         kind="scatter", \
+         grid=True, \
+         x="raan", \
+         xlabel="RAAN", \
+         xlim=(0, 360), \
+         y="hours_of_sunlight", \
+         ylabel="Hours of Sunlight")
+      plt.savefig(file_name)
+      messagebox.showinfo(message=f"Exported graph to {file_name}")

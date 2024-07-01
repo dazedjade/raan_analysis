@@ -128,15 +128,11 @@ class RaanAnalysisView:
         pdf_file_name_entry.grid(row=0, column=5, padx=5, pady=5, sticky="nsew")
         export_pdf_button.grid(row=0, column=6, padx=5, pady=5, sticky="nsew")
 
-        self._graph_canvas = Canvas(parent)
-        self._graph_canvas.grid(row=1, column=0, columnspan=7, padx=5, pady=5, sticky="nsew")
-
         parent.columnconfigure(0, weight=1)
         parent.columnconfigure(1, weight=1)
         parent.columnconfigure(3, weight=1)
         parent.columnconfigure(4, weight=1)
         parent.columnconfigure(6, weight=1)
-        parent.rowconfigure(1, weight=1)
 
 
     # Public methods to update view state
@@ -180,10 +176,10 @@ class RaanAnalysisView:
     def set_show_graph_callback(self, callback: Callable | None):
         self._show_graph_callback = callback
 
-    def set_export_to_csv_callback(self, callback: Callable | None):
+    def set_export_data_to_csv_callback(self, callback: Callable | None):
         self._export_csv_callback = callback
 
-    def set_export_to_pdf_callback(self, callback: Callable | None):
+    def set_export_graph_to_pdf_callback(self, callback: Callable | None):
         self._export_pdf_callback = callback
 
     
@@ -222,11 +218,11 @@ class RaanAnalysisView:
     def _export_pdf(self):
         file_name = self._pdf_file_name.get()
         if file_name is None or file_name == "":
-            messagebox.showinfo(message="Please enter a name for the csv file")
+            messagebox.showinfo(message="Please enter a name for the pdf file")
             return
         
         if file_name.find(".pdf") == -1:
             file_name += ".pdf"
 
         if self._export_pdf_callback is not None:
-            self.export_pdf_callback()
+            self._export_pdf_callback(file_name)

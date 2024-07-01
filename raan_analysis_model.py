@@ -1,6 +1,8 @@
+import pandas as pd
 import sqlite3
-from typing import Final
 from launch_record import LaunchRecord
+from pandas import DataFrame
+from typing import Final
 
 class RaanModel:
 
@@ -124,5 +126,18 @@ class RaanModel:
             net=record[4], \
             sunrise_timestamp=record[5], \
             hours_of_sunlight=record[6], \
-            raan=record[7])      
+            raan=record[7])
+    
+    def as_pandas_frame(self) -> DataFrame | None:
+        """
+        Loads database into a Pandas frame
+
+        Returns: Pandas frame object containing launch records.
+        """
+
+        try:
+            return pd.read_sql_query("SELECT hours_of_sunlight, raan FROM launch", self._db_connection)
+        except sqlite3.DatabaseError as error:
+            print(f"Error when reading db for pandas:\n{error}")
+            return None
         
