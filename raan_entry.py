@@ -43,8 +43,8 @@ class RaanEntry(Frame):
             if raan_float >= 0 and raan_float <= 360:
                 set_to_value = raan_float
             else:
-                messagebox.showinfo(message="RAAN value not in bounds of 0 to 360, so setting to null.")
+                messagebox.showinfo(message=Strings.RAAN_OUT_OF_BOUNDS)
         except ValueError:
-            print("Unable to parse enterd RAAN value, likely by removing value, so setting to null.")
+            print(Strings.RAAN_PARSE_FAIL)
 
         self._raan_confirm_callback(set_to_value)

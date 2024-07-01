@@ -5,9 +5,11 @@ from raan_analysis_model import RaanModel
 from raan_analysis_view import RaanAnalysisView
 from tkinter import messagebox
 
-# By having our view controller extend Tkinter, we can encapsulate all
-# behaviour and make use of a Model View Controller pattern.
 class RaanAnalysisViewController(tk.Tk):
+   """
+   By having our view controller extend Tkinter, we can encapsulate all
+   behaviour and make use of a Model View Controller pattern.
+   """
 
    def __init__(self) -> None:
       super().__init__()

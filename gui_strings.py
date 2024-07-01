@@ -28,4 +28,7 @@ class Strings:
         If unchecked, the hours before launch net will be used and will result in negative
         values for hours of sunlight in cases where launch was before dawn.
         """
-    
+    ENTER_FILE_NAME_CSV: Final[str] = "Please enter a name for the csv file"
+    ENTER_FILE_NAME_PDF: Final[str] = "Please enter a name for the pdf file"
+    RAAN_OUT_OF_BOUNDS: Final[str] = "RAAN value not in bounds of 0 to 360, so setting to null."
+    RAAN_PARSE_FAIL: Final[str] = "Unable to parse enterd RAAN value, likely by removing value, so setting to null."

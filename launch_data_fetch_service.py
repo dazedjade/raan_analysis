@@ -1,18 +1,19 @@
 import datetime
-import json
 import os
 import requests
 from typing import Final
 from raan_analysis_model import RaanModel
 from suntimes import SunTimes  
 
-# Handles the fetch and parsing of data from API endpoint.
-#
-# Note: While we use the limit field in the launches/previous endpoint
-# query, the data source uses it as a limit of the results per page.
-# Therefore, we could make use of the result's "next" property to fetch
-# another N number of records until we've consumed all available data.
 class LaunchDataFetchService:
+    """
+    Handles the fetch and parsing of data from API endpoint.
+
+    Note: While we use the limit field in the launches/previous endpoint
+    query, the data source uses it as a limit of the results per page.
+    Therefore, we could make use of the result's "next" property to fetch
+    another N number of records until we've consumed all available data.
+    """
 
     _compiled_url: str
 
@@ -51,6 +52,16 @@ class LaunchDataFetchService:
         self._compiled_url = base_url + self._PREVIOUS_LAUNCHES_QUERY %(limit)
 
     def fetch(self, model) -> bool:
+        """
+        Perform the fetch of N records from previous launches.
+
+        Args:
+        model: Handle to the model to store data within on load.
+
+        Note: This is executed on the main thread. With more time, it would be 
+        useful to move to the background so that the UI doesn't lock on large
+        data requests or low bandwidth, but is OK for current requirements.
+        """
         try:
             results = requests.get(self._compiled_url)
         except Exception as error:

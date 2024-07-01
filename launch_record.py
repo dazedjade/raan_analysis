@@ -1,4 +1,7 @@
 class LaunchRecord:
+    """
+    Basic representation of a launch record for passing to UI for display
+    """
     def __init__(self, \
             launch_id: str, \
             name: str, \

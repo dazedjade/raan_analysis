@@ -212,7 +212,7 @@ class RaanAnalysisView:
         # Using basic checks for file name extension due to time constraints.
         file_name = self._csv_file_name.get()
         if file_name is None or file_name == "":
-            messagebox.showinfo(message="Please enter a name for the csv file")
+            messagebox.showinfo(message=Strings.ENTER_FILE_NAME_CSV)
             return
         
         if file_name.find(".csv") == -1:
@@ -224,7 +224,7 @@ class RaanAnalysisView:
     def _export_pdf(self):
         file_name = self._pdf_file_name.get()
         if file_name is None or file_name == "":
-            messagebox.showinfo(message="Please enter a name for the pdf file")
+            messagebox.showinfo(message=Strings.ENTER_FILE_NAME_PDF)
             return
         
         if file_name.find(".pdf") == -1:
