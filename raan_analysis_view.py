@@ -21,6 +21,7 @@ class RaanAnalysisView:
     _sunlight_hours: StringVar
     _csv_file_name: StringVar
     _pdf_file_name: StringVar
+    _sunlight_hours_mode: BooleanVar
 
     def __init__(self, parent) -> None:
         
@@ -46,6 +47,7 @@ class RaanAnalysisView:
         self._sunlight_hours = StringVar()
         self._csv_file_name = StringVar()
         self._pdf_file_name = StringVar()
+        self._sunlight_hours_mode = BooleanVar()
 
     def _make_root_content(self, parent: Tk):
         self.style = ttk.Style()
@@ -119,6 +121,8 @@ class RaanAnalysisView:
         pdf_file_name_label = Label(parent, text=Strings.PDF_EXPORT_FILE_NAME)
         pdf_file_name_entry = Entry(parent, textvariable=self._pdf_file_name)
         export_pdf_button = Button(parent, text=Strings.EXPORT_PDF, command=self._export_pdf)
+        sunlight_mode_check = Checkbutton(parent, variable=self._sunlight_hours_mode, onvalue=True, offvalue=False)
+        sunlight_mode_label = Label(parent, text=Strings.SUNLIGHT_HOURS_MODE)
 
         show_graph_button.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
         csv_file_name_label.grid(row=0, column=1, padx=5, pady=5, sticky="nse")
@@ -127,6 +131,8 @@ class RaanAnalysisView:
         pdf_file_name_label.grid(row=0, column=4, padx=5, pady=5, sticky="nse")
         pdf_file_name_entry.grid(row=0, column=5, padx=5, pady=5, sticky="nsew")
         export_pdf_button.grid(row=0, column=6, padx=5, pady=5, sticky="nsew")
+        sunlight_mode_check.grid(row=1, column=0, sticky="nsew")
+        sunlight_mode_label.grid(row=1, column=1, columnspan=6, sticky="nsew")
 
         parent.columnconfigure(0, weight=1)
         parent.columnconfigure(1, weight=1)
@@ -200,7 +206,7 @@ class RaanAnalysisView:
 
     def _show_raan_sunlight_graph(self):
         if self._show_graph_callback is not None:
-            self._show_graph_callback()
+            self._show_graph_callback(self._sunlight_hours_mode.get())
 
     def _export_csv(self):
         # Using basic checks for file name extension due to time constraints.
@@ -213,7 +219,7 @@ class RaanAnalysisView:
             file_name += ".csv"
         
         if self._export_csv_callback is not None:
-            self._export_csv_callback(file_name)
+            self._export_csv_callback(file_name, self._sunlight_hours_mode.get())
 
     def _export_pdf(self):
         file_name = self._pdf_file_name.get()
@@ -225,4 +231,4 @@ class RaanAnalysisView:
             file_name += ".pdf"
 
         if self._export_pdf_callback is not None:
-            self._export_pdf_callback(file_name)
+            self._export_pdf_callback(file_name, self._sunlight_hours_mode.get())

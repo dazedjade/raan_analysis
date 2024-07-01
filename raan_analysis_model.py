@@ -128,7 +128,7 @@ class RaanModel:
             hours_of_sunlight=record[6], \
             raan=record[7])
     
-    def as_pandas_frame(self) -> DataFrame | None:
+    def as_pandas_frame_total_sunlight(self) -> DataFrame | None:
         """
         Loads database into a Pandas frame
 
@@ -137,6 +137,31 @@ class RaanModel:
 
         try:
             return pd.read_sql_query("SELECT hours_of_sunlight, raan FROM launch", self._db_connection)
+        except sqlite3.DatabaseError as error:
+            print(f"Error when reading db for pandas:\n{error}")
+            return None
+        
+    def as_pandas_frame_hours_before_net(self) -> DataFrame | None:
+        """
+        Loads database into a Pandas frame with data needed to calculate hours of 
+        sunlight before a launch.
+
+        Returns: Pandas frame object containing launch records.
+        """
+
+        try:
+            return pd.read_sql_query("""
+            SELECT 
+                raan,
+                IIF(
+                    ((net - sunrise_timestamp) / 3600.0) < hours_of_sunlight, 
+                        ((net - sunrise_timestamp) / 3600.0), 
+                        hours_of_sunlight
+                    )
+                AS sunlight_hours_before_launch
+            FROM launch
+            """, \
+            self._db_connection)
         except sqlite3.DatabaseError as error:
             print(f"Error when reading db for pandas:\n{error}")
             return None

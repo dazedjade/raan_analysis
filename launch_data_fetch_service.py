@@ -117,11 +117,3 @@ class LaunchDataFetchService:
                 sunrise_timestamp=sunrise_time, \
                 hours_of_sunlight=total_sunlight_hours)
             
-
-
-
-
-
-            
-
-

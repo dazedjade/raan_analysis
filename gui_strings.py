@@ -22,4 +22,10 @@ class Strings:
     EXPORT_CSV: Final[str] = "Export CSV"
     PDF_EXPORT_FILE_NAME: Final[str] = "PDF export file name:"
     EXPORT_PDF: Final[str] = "Export PDF"
+    SUNLIGHT_HOURS_MODE: Final[str] = \
+        """
+        If checked, graph and exports will use total sunlight hours for the launch day.
+        If unchecked, the hours before launch net will be used and will result in negative
+        values for hours of sunlight in cases where launch was before dawn.
+        """
     
