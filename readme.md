@@ -1,4 +1,4 @@
-This code was written as part of a code submissiong for a job application process. The outline was to 
+This code was written as part of a code submission for a job application process. The outline was to 
 use python to write an application to pull data from an online source of rocket launches to see if there
 is a correlation between the number of sunlight hours before launch and the Right Ascension of the Ascending 
 Node (RAAN). What follows below is the readme that was submitted along with the code. 
